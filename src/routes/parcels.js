@@ -14,30 +14,44 @@ const createTableSQL = `
     )
   `;
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const { sort, type } = req.query;
-  const parcels = [{}, {}];
-
+  let selectAllParcelsSQL = 'SELECT * FROM parcels';
   if (sort && type) {
-    // user wants to sort
-    console.log(sort, type);
+    // user wants to sort, so modify the
+    // selectAllParcelsSQL query above
+    // sort can be the field to sort by, and type can
+    // be the sort direction, either ASC or DESC
+    // an example API request for this handle will be
+    // /api/v1/parcels?sort=origin&type=DESC
+    selectAllParcelsSQL += ''; // add the missing bit
   }
 
+  const { rows } = await execute(selectAllParcelsSQL);
   res.status(200).send({
-    data: parcels,
+    parcels: rows,
   });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
+  if (!id) {
+    const error = new Error('cannot handle request with data provided');
+    error.httpStatusCode = 400;
+  
+    // raise this as an error so that our
+    // default error handler at
+    // line 15 to line 22 of server.js
+    // can handler at
+    next(error);
+    return;
+  }
 
-  const parcel = {
-    id,
-    name: 'ALC T-shirts',
-    location: 'Kigali',
-  };
+  const selectAParcelsSQL = 'SELECT * FROM parcels WHERE id = $1';
+  const { rows } = await execute(selectAParcelsSQL, [id]);
+
   res.status(200).send({
-    data: parcel,
+    parcel: rows[0],
   });
 });
 
