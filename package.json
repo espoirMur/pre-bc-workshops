@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha tests/add.js",
-    "build": "babel server -d dist",
+    "build": "babel src -d dist",
     "apis": "nodemon --exec babel-node --presets env src/server.js"
   },
   "repository": {
@@ -15,7 +15,10 @@
   "author": "Odili Charles Opute",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4"
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "pg": "^7.6.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
